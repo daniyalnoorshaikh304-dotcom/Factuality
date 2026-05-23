@@ -1,0 +1,31 @@
+name: Factuality Daily Upload
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  make-video:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install FFmpeg
+        run: sudo apt-get install -y ffmpeg
+
+      - name: Run bot
+        env:
+          GROQ_KEY: ${{ secrets.GROQ_KEY }}
+          PEXELS_KEY: ${{ secrets.PEXELS_KEY }}
+          ELEVEN_KEY: ${{ secrets.ELEVEN_KEY }}
+          VOICE_ID: ${{ secrets.VOICE_ID }}
+        run: python main.py
